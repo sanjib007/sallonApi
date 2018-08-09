@@ -23,9 +23,11 @@ $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
 
-// $app->withFacades();
+ $app->withFacades();
 
-// $app->withEloquent();
+ $app->withEloquent();
+
+ $app->configure('swagger-lume');
 
 /*
 |--------------------------------------------------------------------------
@@ -65,9 +67,11 @@ $app->configure('auth');
 //    App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+   // 'auth' => App\Http\Middleware\Authenticate::class,
+   'throttle' => App\Http\Middleware\ThrottleRequests::class,
+
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +88,7 @@ $app->configure('auth');
  $app->register(App\Providers\AuthServiceProvider::class);
  $app->register(App\Providers\EventServiceProvider::class);
  $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+ 
  // \Dusterio\LumenPassport\LumenPassport::routes($this->app);
 /*
 |--------------------------------------------------------------------------
