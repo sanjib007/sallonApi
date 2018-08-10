@@ -1,8 +1,17 @@
 <?php
 
 namespace App\Traits;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
+use Laravel\Lumen\Routing\ProvidesConvenienceMethods;
+
+
 trait ApiResponse
 {
+  //  use ProvidesConvenienceMethods;
     private function successResponse($data, $code)
     {
         return response()->json($data, $code);
@@ -21,11 +30,10 @@ trait ApiResponse
         }
         $transformer = $collection->first()->transformer;
 
-
         $collection = $this->filterData($collection, $transformer);
         $collection = $this->sortData($collection, $transformer);
         $collection = $this->paginate($collection);
-        $collection = $this->transformData($collection, $transformer);
+      //  $collection = $this->transformData($collection['data'], $transformer);
         $collection = $this->cacheResponse($collection);
         return $this->successResponse($collection, $code);
     }
@@ -45,8 +53,8 @@ trait ApiResponse
 
     protected function sortData(Collection $collection, $transformer)
     {
-        if (request()->has('sort_by')) {
-            $attribute = $transformer::originalAttribute(request()->sort_by);
+        if (app('request')->has('sort_by')) {
+            $attribute = $transformer::originalAttribute(app('request')->sort_by);
             $collection = $collection->sortBy($attribute);
         }
         return $collection;
@@ -54,13 +62,12 @@ trait ApiResponse
 
     protected function transformData($data, $tranformer)
     {
-        $transformation = fractal($data, new $tranformer);
-        return $transformation->toArray();
+        return new $tranformer($data);
     }
 
     protected function filterData(Collection $collection, $tranformer)
     {
-        foreach (request()->query() as $query => $values) {
+        foreach (app('request')->query() as $query => $values) {
             $attribute = $tranformer::originalAttribute($query);
             if (isset($attribute, $values)) {
                 $collection = $collection->where($attribute, $values);
@@ -74,25 +81,28 @@ trait ApiResponse
         $rules = [
             'per_page' => 'integer|min:2|max:50'
         ];
-        Validator::validate(request()->all(), $rules);
+        app('validator')->validate(app('request')->all(), $rules);
+
+        //Validator::validate(app('request')->all(), $rules);
+
         $page = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 15;
-        if (request()->has('per_page')) {
-            $perPage = (int)request()->per_page;
+        if (app('request')->has('per_page')) {
+            $perPage = (int)app('request')->per_page;
         }
         $result = $collection->slice(($page - 1) * $perPage, $perPage)->values();
         $paginated = new LengthAwarePaginator($result, $collection->count(), $perPage, $page, [
             'path' => LengthAwarePaginator::resolveCurrentPath(),
         ]);
-        $paginated->appends(request()->all());
+        $paginated->appends(app('request')->all());
         return $paginated;
     }
 
     public function cacheResponse($data)
     {
 
-        $url = request()->url();
-        $queryParam = request()->query();
+        $url = app('request')->url();
+        $queryParam = app('request')->query();
         ksort($queryParam);
 
         $queryString = http_build_query($queryParam);

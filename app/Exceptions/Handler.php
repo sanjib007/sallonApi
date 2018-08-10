@@ -57,6 +57,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+
         if (env('APP_DEBUG')) {
             return parent::render($request, $e);
         }
@@ -75,7 +76,10 @@ class Handler extends ExceptionHandler
         } elseif ($e instanceof AuthorizationException) {
             $status = Response::HTTP_FORBIDDEN;
             $e = new AuthorizationException('HTTP_FORBIDDEN', $status);
-        } elseif ($e instanceof \Dotenv\Exception\ValidationException && $e->getResponse()) {
+        }elseif($e instanceof \Illuminate\Validation\ValidationException){
+            return  $this->convertValidationExceptionToResponse($e,$request);
+        }
+        elseif ($e instanceof \Dotenv\Exception\ValidationException && $e->getResponse()) {
             $status = Response::HTTP_BAD_REQUEST;
             $e = new \Dotenv\Exception\ValidationException('HTTP_BAD_REQUEST', $status, $e);
             $response = $e->getResponse();

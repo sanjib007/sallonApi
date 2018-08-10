@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Webpatser\Uuid\Uuid;
 
 
 class PostController extends Controller
@@ -19,7 +20,7 @@ class PostController extends Controller
     {
         
         $info = Post::all();
-        return $info;
+        return $this->showAll($info);
     }
 
     /**
@@ -30,7 +31,20 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $details = $request->only(
+            'title',
+            'description'
+        );
+
+        $this->validate($request, [
+            'title' => 'required|string',
+            'description' => 'required|string|min:8',
+        ]);
+
+        $post = Post::create($details);
+        return $this->showOne($post,201);
+
+
     }
 
     /**
