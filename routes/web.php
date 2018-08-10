@@ -19,7 +19,9 @@ $router->group(['middleware' => 'throttle:2000,1'], function () use ($router) {
    // $router->group(['middleware' => 'auth:api'], function () use ($router) {
         $router->group(['prefix' => 'api/v1'], function () use ($router) {
             $router->get('/test', 'Api\v1\PostController@index');
+            $router->get('/test/{id}', 'Api\v1\PostController@show');
             $router->post('/test', 'Api\v1\PostController@store');
+
 
         });
   //  });

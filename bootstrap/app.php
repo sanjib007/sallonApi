@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 try {
-    (new Dotenv\Dotenv(__DIR__.'/../'))->load();
+    (new Dotenv\Dotenv(__DIR__ . '/../'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
     //
 }
@@ -20,14 +20,14 @@ try {
 */
 
 $app = new Laravel\Lumen\Application(
-    realpath(__DIR__.'/../')
+    realpath(__DIR__ . '/../')
 );
 
- $app->withFacades();
+$app->withFacades();
 
- $app->withEloquent();
+$app->withEloquent();
 
- $app->configure('swagger-lume');
+$app->configure('swagger-lume');
 
 /*
 |--------------------------------------------------------------------------
@@ -63,13 +63,13 @@ $app->configure('auth');
 |
 */
 
- $app->middleware([
+$app->middleware([
     App\Http\Middleware\JsonMiddleware::class
- ]);
+]);
 
 $app->routeMiddleware([
-   // 'auth' => App\Http\Middleware\Authenticate::class,
-   'throttle' => App\Http\Middleware\ThrottleRequests::class,
+    // 'auth' => App\Http\Middleware\Authenticate::class,
+    'throttle' => App\Http\Middleware\ThrottleRequests::class,
 
 ]);
 
@@ -84,12 +84,11 @@ $app->routeMiddleware([
 |
 */
 
- $app->register(App\Providers\AppServiceProvider::class);
- $app->register(App\Providers\AuthServiceProvider::class);
- $app->register(App\Providers\EventServiceProvider::class);
- $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
- 
- // \Dusterio\LumenPassport\LumenPassport::routes($this->app);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+// \Dusterio\LumenPassport\LumenPassport::routes($this->app);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -104,7 +103,7 @@ $app->routeMiddleware([
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
-    require __DIR__.'/../routes/web.php';
+    require __DIR__ . '/../routes/web.php';
 });
 
 
@@ -122,7 +121,6 @@ $app->routeMiddleware([
 // Finally register two service providers - original one and Lumen adapter
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
-
 
 
 return $app;

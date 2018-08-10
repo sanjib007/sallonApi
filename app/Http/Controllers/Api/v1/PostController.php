@@ -55,7 +55,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $post = Post::find($id);
+        return $this->showOne($post,200);
     }
 
     /**

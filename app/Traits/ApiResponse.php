@@ -1,17 +1,17 @@
 <?php
 
 namespace App\Traits;
-use Illuminate\Database\Eloquent\Collection;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Lumen\Routing\ProvidesConvenienceMethods;
-
 
 trait ApiResponse
 {
-  //  use ProvidesConvenienceMethods;
+
+
     private function successResponse($data, $code)
     {
         return response()->json($data, $code);
@@ -29,11 +29,11 @@ trait ApiResponse
             return $this->successResponse(['data' => $collection], $code);
         }
         $transformer = $collection->first()->transformer;
-
+        $collection = $this->orderBy($collection);
         $collection = $this->filterData($collection, $transformer);
         $collection = $this->sortData($collection, $transformer);
         $collection = $this->paginate($collection);
-      //  $collection = $this->transformData($collection['data'], $transformer);
+        $collection = $this->transformData($collection, $transformer);
         $collection = $this->cacheResponse($collection);
         return $this->successResponse($collection, $code);
     }
@@ -43,7 +43,7 @@ trait ApiResponse
 
         $transformer = $instance->transformer;
         $instance = $this->transformData($instance, $transformer);
-        return $this->successResponse($instance, $code);
+        return $this->successResponse($instance['data'], $code);
     }
 
     protected function showMessage($message, $code = 200)
@@ -62,7 +62,8 @@ trait ApiResponse
 
     protected function transformData($data, $tranformer)
     {
-        return new $tranformer($data);
+        $transformation = fractal($data, new $tranformer);
+        return $transformation->toArray();
     }
 
     protected function filterData(Collection $collection, $tranformer)
@@ -78,24 +79,43 @@ trait ApiResponse
 
     protected function paginate(Collection $collection)
     {
+
         $rules = [
             'per_page' => 'integer|min:2|max:50'
         ];
         app('validator')->validate(app('request')->all(), $rules);
 
-        //Validator::validate(app('request')->all(), $rules);
-
         $page = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 15;
+
+        $perPage = config('app.per_page');
         if (app('request')->has('per_page')) {
             $perPage = (int)app('request')->per_page;
         }
         $result = $collection->slice(($page - 1) * $perPage, $perPage)->values();
-        $paginated = new LengthAwarePaginator($result, $collection->count(), $perPage, $page, [
+
+        $paginated = new LengthAwarePaginator($result, count($collection), $perPage, $page, [
             'path' => LengthAwarePaginator::resolveCurrentPath(),
         ]);
+
         $paginated->appends(app('request')->all());
         return $paginated;
+    }
+
+    protected function orderBy(Collection $collection)
+    {
+        $rules = [
+            'order_by' => 'string|in:asc,desc'
+        ];
+        app('validator')->validate(app('request')->all(), $rules);
+        if (app('request')->has('order_by')) {
+            if (app('request')->order_by == 'desc') {
+                return $collection->reverse();
+            } else {
+                return $collection;
+            }
+        } else {
+            return $collection->reverse();
+        }
     }
 
     public function cacheResponse($data)
