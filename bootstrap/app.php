@@ -88,6 +88,9 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(Laravel\Passport\PassportServiceProvider::class);
+$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+
 // \Dusterio\LumenPassport\LumenPassport::routes($this->app);
 /*
 |--------------------------------------------------------------------------
@@ -119,8 +122,6 @@ $app->routeMiddleware([
 ]);
 
 // Finally register two service providers - original one and Lumen adapter
-$app->register(Laravel\Passport\PassportServiceProvider::class);
-$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 
 
 return $app;

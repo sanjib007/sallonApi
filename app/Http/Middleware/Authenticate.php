@@ -36,8 +36,6 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($this->auth->guard($guard)->guest()) {
-          // abort(401, 'Unauthorized');
-           // throw new \Exception("Unauthorized",401);
             return response()
                 ->json([
                     'success' => false,

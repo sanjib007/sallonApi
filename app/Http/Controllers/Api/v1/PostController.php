@@ -20,6 +20,7 @@ class PostController extends Controller
     {
         
         $info = Post::all();
+
         return $this->showAll($info);
     }
 
@@ -56,6 +57,7 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
+
         return $this->showOne($post,200);
     }
 
