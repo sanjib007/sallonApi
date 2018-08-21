@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Database\Eloquent\Model;
@@ -12,13 +13,24 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use HasApiTokens, Authenticatable, Authorizable;
 
+    const VERIFIED_USER = 1;
+    CONST UNVERIFIED_USER = 0;
+    const ADMIN_USER = 'true';
+    const REGULAR_USER = 'false';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'name',
+        'email',
+        'password',
+        'verified',
+        'verification_token',
+        'admin',
+        'phone_no',
+        'image_thumb'
     ];
 
     /**
@@ -28,5 +40,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     protected $hidden = [
         'password',
+        'remember_token',
+        'verification_token',
     ];
+
+    public function findForPassport($identifier) {
+        return User::orWhere('email', $identifier)->orWhere('phone_no', $identifier)->where('verified',$this::VERIFIED_USER)->first();
+    }
+
+    public function isVerified()
+    {
+        return $this->verified == USER::VERIFIED_USER;
+    }
+
+    public static function generateVerificationCode()
+    {
+        return str_random(40);
+    }
+    public function isAdmin()
+    {
+        return $this->admin == User::ADMIN_USER;
+    }
 }
