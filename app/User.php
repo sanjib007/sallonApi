@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Traits\Uuids;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
+use App\Transformers\UserTransformer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -12,17 +14,23 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use HasApiTokens, Authenticatable, Authorizable;
+    use Uuids;
+    public $transformer = UserTransformer::class;
 
     const VERIFIED_USER = 1;
     CONST UNVERIFIED_USER = 0;
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
+
+    public $incrementing = false;
+    
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',

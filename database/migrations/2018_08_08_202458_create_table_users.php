@@ -19,6 +19,7 @@ class CreateTableUsers extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('phone_no');
             $table->rememberToken();
             $table->string('verified')->default(User::UNVERIFIED_USER);
             $table->string('verification_token')->nullable();

@@ -15,10 +15,10 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::post('registration', 'Api\v1\UserController@store');
-Route::get('users/{user}/resend', 'Api\v1\UserController@resend');
-Route::name('verify')->get('users/verify/{token}', 'Api\v1\UserController@verify');
-Route::post('login', 'Api\v1\UserController@login');
+$router->post('registration', 'Api\v1\UserController@store');
+$router->get('users/{user}/resend', 'Api\v1\UserController@resend');
+$router->get('users/verify/{token}', 'Api\v1\UserController@verify');
+$router->post('login', 'Api\v1\UserController@login');
 
 $router->group(['middleware' => 'throttle:200,1'], function () use ($router) {
   // $router->group(['middleware' => 'auth'], function () use ($router) {

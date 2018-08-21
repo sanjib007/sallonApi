@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
 {
@@ -45,8 +48,7 @@ class UserController extends Controller
         ];
         $this->validate($request, $rules);
         $data = $request->all();
-
-        $data['password'] = bcrypt($request->password);
+        $data['password'] = Hash::make($request->password);
         $data['verified'] = User::UNVERIFIED_USER;
         $data['verification_token'] = User::generateVerificationCode();
         $data['admin'] = User::REGULAR_USER;
@@ -178,11 +180,11 @@ class UserController extends Controller
         }
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->post(route('oauth.token'), [
+        $response = $client->post('/v1/oauth/token', [
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => env('client_id', 2),
-                'client_secret' => env('client_secret', 'EoI5mImtDRySqc89HiUJIorBhcIZct9V6Z6IwzCx'),
+                'client_secret' => env('client_secret', 'ervexbDYA5m32TtsmI1b7HqU4A5TUPItmiaxEN5h'),
                 'username' => $request->username,
                 'password' => $request->password,
             ],
@@ -245,7 +247,7 @@ class UserController extends Controller
         ];
         $this->validate($request, $rules);
 
-//dd($request->all());hasFile
+        //dd($request->all());hasFile
 
 
         if ($request->hasFile('cover_image')) {
