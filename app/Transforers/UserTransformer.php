@@ -10,6 +10,7 @@ class UserTransformer extends TransformerAbstract
     /**
      * A Fractal transformer.
      *
+     * @param User $user
      * @return array
      */
 
@@ -25,7 +26,7 @@ class UserTransformer extends TransformerAbstract
             'password'=> (string) $user->password,
             'verified'=> (bool) $user->verified,
             'verification_token'=> (string) $user->verification_token,
-            'admin'=> (bool) $user->admin,
+            'admin'=> (bool) $user->admin=="true"?true:false,
             'phone_no'=> (string) $user->phone_no,
             'image_thumb'=> (string) $user->image_thumb
         ];

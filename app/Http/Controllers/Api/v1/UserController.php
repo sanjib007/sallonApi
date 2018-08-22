@@ -39,29 +39,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $rules = [
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'phone_no' => 'required|min:10|numeric|unique:users',
-        ];
-        $this->validate($request, $rules);
-        $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-        $data['verified'] = User::UNVERIFIED_USER;
-        $data['verification_token'] = User::generateVerificationCode();
-        $data['admin'] = User::REGULAR_USER;
-        if ($request->hasFile('image_thumb')) {
-            $data['image_thumb'] = $request->image_thumb->store('');
-        } else {
-            $data['image_thumb'] = null;
-        }
-        $user = User::create($data);
-        Mail::to($user)->send(new UserCreated($user));
-        return $this->showOne($user);
-    }
+
 
     /**
      * Display the specified resource.
@@ -141,6 +119,10 @@ class UserController extends Controller
         return $this->showOne($user);
     }
 
+    /**
+     * @param $token
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function verify($token)
     {
         $user = User::where('verification_token', $token)->firstOrFail();
@@ -164,37 +146,7 @@ class UserController extends Controller
     }
 
 
-    public function login(Request $request)
-    {
-        $rules = [
-            'username' => 'required',
-            'password' => 'required'
-        ];
-        $this->validate($request, $rules);
 
-        $user = User::where('email', $request->username)->Orwhere('phone_no', $request->username)->first();
-
-        if (!$user) {
-            return $this->errorResponse("User not found", 401);
-        }
-        if ($user->verified == User::UNVERIFIED_USER) {
-            return $this->errorResponse("you are not verified resend mail and again verified", 401);
-        }
-
-        $client = new \GuzzleHttp\Client();
-        $response = $client->post('/v1/oauth/token', [
-            'form_params' => [
-                'grant_type' => 'password',
-                'client_id' => env('client_id', 2),
-                'client_secret' => env('client_secret', 'ervexbDYA5m32TtsmI1b7HqU4A5TUPItmiaxEN5h'),
-                'username' => $request->username,
-                'password' => $request->password,
-            ],
-            'http_errors' => false //add this to return errors in json
-        ]);
-        return $response;
-        return json_decode((string)$response->getBody(), true);
-    }
 
     public function getRefreshToken(Request $request)
     {

@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Webpatser\Uuid\Uuid;
 
 
@@ -18,7 +19,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        
+
+
         $info = Post::all();
 
         return $this->showAll($info);
@@ -41,7 +43,7 @@ class PostController extends Controller
             'title' => 'required|string',
             'description' => 'required|string|min:8',
         ]);
-
+        $details["user_id"] =Auth::user()->id;
         $post = Post::create($details);
         return $this->showOne($post,201);
 
