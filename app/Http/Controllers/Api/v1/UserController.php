@@ -59,53 +59,53 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $rules = [
-            'email' => 'sometimes|email|unique:users',
-            'password' => 'sometimes|min:6|confirmed',
-            'cover_image' => 'sometimes|required|image',
-            'phone_no' => 'sometimes|min:10|numeric|unique:users,phone_no',
-        ];
-        $this->validate($request, $rules);
-
-        if ($request->has('name')) {
-            $user->name = $request->name;
-        }
-        if ($request->has('phone_no')) {
-            $user->phone_no = $request->phone_no;
-        }
-        if ($request->has('email') && $user->email != $request->email) {
-            $user->verified = User::UNVERIFIED_USER;
-            $user->verification_token = User::generateVerificationCode();
-            $user->email = $request->email;
-        }
-        if ($request->has('password')) {
-            $user->password = bcrypt($request->password);
-        }
-
-
-        if ($request->has('cover_image')) {
-            $file = $request->file('cover_image');
-            $image = Image::make($file);
-            $image->encode('jpg', 50);
-            $fileName = uniqid('img_') . ".jpg";
-            $image->resize(300, 200, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-            $image->save(public_path('img/'.$fileName));
-            $user->image_thumb = $fileName;
-        }
-
-
-
-
-        if (!$user->isDirty()) {
-            return $this->errorResponse('you need to specify a diffenrt value to update code', 422);
-        }
-        $user->save();
-        return $this->showOne($user);
-    }
+//    public function update(Request $request, $id)
+//    {
+//        $rules = [
+//            'email' => 'sometimes|email|unique:users',
+//            'password' => 'sometimes|min:6|confirmed',
+//            'cover_image' => 'sometimes|required|image',
+//            'phone_no' => 'sometimes|min:10|numeric|unique:users,phone_no',
+//        ];
+//        $this->validate($request, $rules);
+//
+//        if ($request->has('name')) {
+//            $user->name = $request->name;
+//        }
+//        if ($request->has('phone_no')) {
+//            $user->phone_no = $request->phone_no;
+//        }
+//        if ($request->has('email') && $user->email != $request->email) {
+//            $user->verified = User::UNVERIFIED_USER;
+//            $user->verification_token = User::generateVerificationCode();
+//            $user->email = $request->email;
+//        }
+//        if ($request->has('password')) {
+//            $user->password = bcrypt($request->password);
+//        }
+//
+//
+//        if ($request->has('cover_image')) {
+//            $file = $request->file('cover_image');
+//            $image = Image::make($file);
+//            $image->encode('jpg', 50);
+//            $fileName = uniqid('img_') . ".jpg";
+//            $image->resize(300, 200, function ($constraint) {
+//                $constraint->aspectRatio();
+//            });
+//            $image->save(public_path('img/'.$fileName));
+//            $user->image_thumb = $fileName;
+//        }
+//
+//
+//
+//
+//        if (!$user->isDirty()) {
+//            return $this->errorResponse('you need to specify a diffenrt value to update code', 422);
+//        }
+//        $user->save();
+//        return $this->showOne($user);
+//    }
 
     /**
      * Remove the specified resource from storage.
