@@ -151,17 +151,17 @@ class UserController extends Controller
         return $this->showMessage('The account has been verified successfully');
     }
 
-    public function resend(User $user)
+    public function resend($id)
     {
+        $user = User::find($id);
+
         if ($user->isVerified()) {
             return $this->errorResponse("this user is already verified", 409);
         }
         $user->verification_token = User::generateVerificationCode();
         $user->save();
-        if (env('APP_ENV' != 'local', 'local')) {
-            Mail::to($user)->send(new UserCreated($user));
-        }
-        return $this->showMessage("The verification email send");
+        Mail::to($user)->send(new UserCreated($user));
+        return $this->showMessage("The verification email send successfully");
     }
 
 

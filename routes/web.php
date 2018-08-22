@@ -22,15 +22,11 @@ $router->group(['middleware' => 'throttle:200,1'], function () use ($router) {
 
   // $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->group(['prefix' => 'api/v1'], function () use ($router) {
-            $router->get('/test', 'Api\v1\PostController@index');
-            $router->get('/test/{id}', 'Api\v1\PostController@show');
-            $router->post('/test', 'Api\v1\PostController@store');
+            $router->get('users/{id}/resend', 'Api\v1\UserController@resend');
             $router->post('registration', 'Api\v1\UserController@store');
-            $router->get('users/{user}/resend', 'Api\v1\UserController@resend');
             $router->get('users/verify/{token}', [
                 'as' => 'verify', 'uses' => 'Api\v1\UserController@verify'
             ]);
-
             $router->post('login', 'Api\v1\UserController@login');
 
             //category route
