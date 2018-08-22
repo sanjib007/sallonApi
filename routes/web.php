@@ -23,10 +23,25 @@ $router->post('login', 'Api\v1\UserController@login');
 $router->group(['middleware' => 'throttle:200,1'], function () use ($router) {
   // $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->group(['prefix' => 'api/v1'], function () use ($router) {
-            $router->get('/test', 'Api\v1\PostController@index');
-            $router->get('/test/{id}', 'Api\v1\PostController@show');
-            $router->post('/test', 'Api\v1\PostController@store');
+            // $router->get('/test', 'Api\v1\PostController@index');
+            // $router->get('/test/{id}', 'Api\v1\PostController@show');
+            // $router->post('/test', 'Api\v1\PostController@store');
 
+
+            //category route
+            $router->get('category', 'Api\v1\CategoryController@index');
+            $router->post('category', 'Api\v1\CategoryController@store');
+            $router->get('category/{id}', 'Api\v1\CategoryController@show');
+            $router->post('category/{id}', 'Api\v1\CategoryController@update');
+            $router->delete('category/{id}', 'Api\v1\CategoryController@destroy');
+
+
+            //Post route
+            $router->get('post', 'Api\v1\PostController@index');
+            $router->post('post', 'Api\v1\PostController@store');
+            $router->get('post/{id}', 'Api\v1\PostController@show');
+            $router->post('post/{id}', 'Api\v1\PostController@update');
+            $router->delete('post/{id}', 'Api\v1\PostController@destroy');
 
         });
   //  });

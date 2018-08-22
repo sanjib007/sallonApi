@@ -24,7 +24,6 @@ trait ApiResponse
 
     protected function showAll(Collection $collection, $code = 200)
     {
-
         if ($collection->isEmpty()) {
             return $this->successResponse(['data' => $collection], $code);
         }

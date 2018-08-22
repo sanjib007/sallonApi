@@ -44,7 +44,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
             'phone_no' => 'required|min:10|numeric|unique:users',
-           // 'image_thumb' => 'sometimes|required|image'
+            'image_thumb' => 'sometimes|required|image'
         ];
         $this->validate($request, $rules);
         $data = $request->all();
@@ -101,7 +101,7 @@ class UserController extends Controller
             $user->email = $request->email;
         }
         if ($request->has('password')) {
-            $user->password = bcrypt($request->password);
+            $user->password = Hash::make($request->password);
         }
 
 
@@ -180,7 +180,7 @@ class UserController extends Controller
         }
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->post('/v1/oauth/token', [
+        $response = $client->post(route('v1/oauth/token'), [
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => env('client_id', 2),
