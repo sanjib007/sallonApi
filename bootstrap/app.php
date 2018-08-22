@@ -27,7 +27,8 @@ $app->withFacades();
 
 $app->withEloquent();
 
-$app->configure('swagger-lume');
+$app->configure('services');
+$app->configure('mail');
 
 /*
 |--------------------------------------------------------------------------
@@ -90,6 +91,7 @@ $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+$app->register(Illuminate\Mail\MailServiceProvider::class);
 
 // \Dusterio\LumenPassport\LumenPassport::routes($this->app);
 /*

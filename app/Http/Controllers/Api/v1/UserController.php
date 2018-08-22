@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Mail\UserCreated;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
@@ -44,7 +46,6 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
             'phone_no' => 'required|min:10|numeric|unique:users',
-           // 'image_thumb' => 'sometimes|required|image'
         ];
         $this->validate($request, $rules);
         $data = $request->all();
@@ -58,6 +59,7 @@ class UserController extends Controller
             $data['image_thumb'] = null;
         }
         $user = User::create($data);
+        Mail::to($user)->send(new UserCreated($user));
         return $this->showOne($user);
     }
 
