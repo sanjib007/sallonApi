@@ -24,6 +24,7 @@ trait ApiResponse
 
     protected function showAll(Collection $collection, $code = 200)
     {
+        //return $collection;
         if ($collection->isEmpty()) {
             return $this->successResponse(['data' => $collection], $code);
         }
@@ -86,7 +87,7 @@ trait ApiResponse
 
         $page = LengthAwarePaginator::resolveCurrentPage();
 
-        $perPage = config('app.per_page');
+        $perPage = env('app.per_page', 10);
         if (app('request')->has('per_page')) {
             $perPage = (int)app('request')->per_page;
         }

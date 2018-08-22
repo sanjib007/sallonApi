@@ -2,15 +2,16 @@
 
 namespace App;
 
+use App\Post;
 use App\Traits\Uuids;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Auth\Authenticatable;
 use Laravel\Lumen\Auth\Authorizable;
 use App\Transformers\UserTransformer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
@@ -70,4 +71,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->admin == User::ADMIN_USER;
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
 }

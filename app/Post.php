@@ -3,6 +3,7 @@
 namespace App;
 
 
+use App\Category;
 use App\Traits\Uuids;
 use App\Transformers\PostTransformer;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,10 @@ class Post extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function categories(){
+        return $this->belongsToMany(Category::class);
     }
 
 }

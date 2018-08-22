@@ -25,7 +25,7 @@ class CreateTableUsers extends Migration
             $table->string('verification_token')->nullable();
             $table->string('admin')->default(User::REGULAR_USER);
             $table->string('device_token');
-            $table->text('image_thumb');
+            $table->text('image_thumb')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

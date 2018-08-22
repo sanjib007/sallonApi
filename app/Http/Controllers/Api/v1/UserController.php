@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\Mail\UserCreated;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
@@ -58,6 +60,7 @@ class UserController extends Controller
             $data['image_thumb'] = null;
         }
         $user = User::create($data);
+        Mail::to($user)->send(new UserCreated($user));
         return $this->showOne($user);
     }
 
@@ -89,6 +92,8 @@ class UserController extends Controller
         ];
         $this->validate($request, $rules);
 
+        $user = User::findOrFail($id);
+
         if ($request->has('name')) {
             $user->name = $request->name;
         }
@@ -116,10 +121,7 @@ class UserController extends Controller
             $image->save(public_path('img/'.$fileName));
             $user->image_thumb = $fileName;
         }
-
-
-
-
+        
         if (!$user->isDirty()) {
             return $this->errorResponse('you need to specify a diffenrt value to update code', 422);
         }
@@ -135,6 +137,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $user = User::findOrFail($id);
         $user->delete();
         return $this->showOne($user);
     }
@@ -190,7 +193,7 @@ class UserController extends Controller
             ],
             'http_errors' => false //add this to return errors in json
         ]);
-        return $response;
+        
         return json_decode((string)$response->getBody(), true);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Post;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 use App\Transformers\CategoryTransformer;
@@ -18,4 +19,8 @@ class Category extends Model
         'name',
         'description',
     ];
+
+    public function posts(){
+        return $this->belongsToMany(Post::class);
+    }
 }

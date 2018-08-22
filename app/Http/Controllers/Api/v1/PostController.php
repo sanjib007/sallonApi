@@ -4,9 +4,11 @@
 
 namespace App\Http\Controllers\Api\v1;
 use App\Post;
+use App\Category;
+use Webpatser\Uuid\Uuid;
+use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Webpatser\Uuid\Uuid;
 
 
 class PostController extends Controller
@@ -15,7 +17,7 @@ class PostController extends Controller
     public function __construct()
     {
 
-        $this->middleware('auth:api', ['except' => ['index','show']]);
+         $this->middleware('auth');
         // $this->middleware(['CheckUserOwnRequest'], ['only' => ['update','destroy']]);
     }
 
@@ -49,28 +51,30 @@ class PostController extends Controller
         $this->validate($request, [
             'title' => 'required|string',
             'description' => 'required|string|min:8',
-            'cover_image' => 'required|image'
+           // 'cover_image' => 'required|image'
         ]);
-
-        // $post = Post::create($details);
-        // return $this->showOne($post,201);
 
         $data = $request->all();
 
         $file = $request->file('cover_image');
-        $image = Image::make($file);
-        $image->encode('jpg',50);
-
-
-        $fileName = uniqid('img_').".jpg";
-
-        $image->save(public_path('img/'.$fileName));
-
-        $data['cover_image'] = $fileName;
+        if($file != null){
+            $image = Image::make($file);
+            $image->encode('jpg',50);
+    
+    
+            $fileName = uniqid('img_').".jpg";
+    
+            $image->save(public_path('img/'.$fileName));
+            $data['cover_image'] = $fileName;
+        }        
 
 
         $data['user_id'] = $request->user()->id;
         $post = Post::create($data);
+
+        $category = Category::find($data['categories']);
+        $post->categories()->attach($category);
+
         // $notifyUser= User::all()->except($request->user()->id)->pluck('device_token')->toArray();
         // $notificationInformation = [
         //     'title'=> 'Hurray!! new post created',

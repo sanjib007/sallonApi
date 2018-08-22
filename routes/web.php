@@ -15,18 +15,23 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->post('registration', 'Api\v1\UserController@store');
-$router->get('users/{user}/resend', 'Api\v1\UserController@resend');
-$router->get('users/verify/{token}', 'Api\v1\UserController@verify');
-$router->post('login', 'Api\v1\UserController@login');
+
+
 
 $router->group(['middleware' => 'throttle:200,1'], function () use ($router) {
+
   // $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->group(['prefix' => 'api/v1'], function () use ($router) {
-            // $router->get('/test', 'Api\v1\PostController@index');
-            // $router->get('/test/{id}', 'Api\v1\PostController@show');
-            // $router->post('/test', 'Api\v1\PostController@store');
+            $router->get('/test', 'Api\v1\PostController@index');
+            $router->get('/test/{id}', 'Api\v1\PostController@show');
+            $router->post('/test', 'Api\v1\PostController@store');
+            $router->post('registration', 'Api\v1\UserController@store');
+            $router->get('users/{user}/resend', 'Api\v1\UserController@resend');
+            $router->get('users/verify/{token}', [
+                'as' => 'verify', 'uses' => 'Api\v1\UserController@verify'
+            ]);
 
+            $router->post('login', 'Api\v1\UserController@login');
 
             //category route
             $router->get('category', 'Api\v1\CategoryController@index');

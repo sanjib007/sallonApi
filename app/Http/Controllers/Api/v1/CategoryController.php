@@ -43,7 +43,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $categories = Category::findOrFail($id);
+        $category = Category::findOrFail($id);
         return $this->showOne($category);
     }
 
@@ -60,6 +60,9 @@ class CategoryController extends Controller
             'name' => 'required',
         ];
         $this->validate($request, $rules);
+
+        $category = Category::findOrFail($id);
+
         if ($request->has('name')) {
             $category->name = $request->name;
         }
