@@ -23,7 +23,20 @@ class PostTransformer extends TransformerAbstract
             'title' => (string) $post->title,
             'details' => (string) $post->description
         ];
+        if(isset($data['user'])){
+            $userTransformer = new UserTransformer();
+            $information['user'] = $userTransformer->transform($post->user);
+        }
 
+        // foreach($data as $key=> $aData){
+        //     if(is_array($data[$key]) ){
+        //         $transformer = $post->$key->first()->transformer;
+               
+        //         $value = new $transformer();
+                
+        //         $information[$key] = $value->transform($post->$key->first());
+        //     }
+        // }
         return $information;
     }
     public static function  originalAttribute($index){

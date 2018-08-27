@@ -29,8 +29,8 @@ class PostController extends Controller
     public function index()
     {
         
-        $info = Post::all();
-
+        $info = Post::with('categories','user')->get();
+      //  return $info;
         return $this->showAll($info);
     }
 

@@ -14,7 +14,7 @@ class CreateCategoryPostTable extends Migration
     public function up()
     {
         Schema::create('category_post', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->increments('id');
             $table->string('category_id');
             $table->string('post_id');
             $table->timestamps();

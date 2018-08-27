@@ -67,7 +67,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof HttpResponseException) {
             $status = Response::HTTP_INTERNAL_SERVER_ERROR;
             $response = $e->getResponse();
-        } else if ($e instanceof ModelNotFoundException) {
+        } elseif ($e instanceof ModelNotFoundException) {
             $modelName = strtolower(class_basename($e->getModel()));
             $status = Response::HTTP_NOT_FOUND;
             $e = new MethodNotAllowedHttpException([], "Does not exits any {$modelName} with the specified identifier", $e);

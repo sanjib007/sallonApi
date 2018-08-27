@@ -32,8 +32,9 @@ $router->group(['middleware' => 'throttle:200,1'], function () use ($router) {
 
 
             $router->group(['middleware' => 'auth'], function () use ($router) {
-                $router->post('add', 'Api\v1\PostController@store');
+                //$router->post('add', 'Api\v1\PostController@store');
                 $router->post('logout', 'Api\v1\AuthenticationController@logout');
+
                 //category route
                 $router->get('category', 'Api\v1\CategoryController@index');
                 $router->post('category', 'Api\v1\CategoryController@store');
